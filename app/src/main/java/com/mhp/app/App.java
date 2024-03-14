@@ -3,19 +3,37 @@
  */
 package com.mhp.app;
 
-import java.application.list.LinkedList;
 
-import static java.application.utilities.StringUtils.join;
-import static java.application.utilities.StringUtils.split;
-import static com.mhp.app.MessageUtils.getMessage;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import org.apache.commons.text.WordUtils;
 
+import org.springframework.context.ApplicationContext;
+
+@SpringBootApplication
 public class App {
+    @Value("${DB_URL}")
+    private String dbUrl;
+
+    @Value("${DB_USER}")
+    private String dbUser;
+
+    @Value("${DB_PASSWORD}")
+    private String dbPassword;
+
     public static void main(String[] args) {
-        LinkedList tokens;
-        tokens = split(getMessage());
-        String result = join(tokens);
-        System.out.println(WordUtils.capitalize(result));
+        ApplicationContext context = SpringApplication.run(App.class, args);
+
+        App application = context.getBean(App.class);
+        application.logProperties();
+    }
+
+    private void logProperties() {
+        System.out.println("DB URL: " + dbUrl);
+        System.out.println("DB User: " + dbUser);
+        System.out.println("DB Password: " + dbPassword);
     }
 }
+
+

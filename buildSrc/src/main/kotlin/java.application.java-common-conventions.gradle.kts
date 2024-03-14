@@ -16,12 +16,14 @@ dependencies {
     constraints {
         // Define dependency versions as constraints
         implementation("org.apache.commons:commons-text:1.10.0")
+
     }
 
     // Use JUnit Jupiter for testing.
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+
 }
 
 // Apply a specific Java toolchain to ease working on different environments.

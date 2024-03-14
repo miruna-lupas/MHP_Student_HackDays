@@ -5,6 +5,6 @@ package com.mhp.app;
 
 class MessageUtils {
     public static String getMessage() {
-        return "Hello      World!";
+        return "Hello World!";
     }
 }
