@@ -1,17 +1,17 @@
 -- File: V1__Add_Workspaces.sql
 
 -- Add Workspaces
-INSERT INTO Workspace (id, workspace_name, capacity, isAvailableForBookings)
-VALUES ('seatid1', 'CLUJ_5_beta_1.1', null, true);
+INSERT INTO Workspace (id, workspace_name,capacity)
+VALUES ('seatid1', 'CLUJ_5_beta_1.1', null);
 
-INSERT INTO Workspace (id, workspace_name, capacity, isAvailableForBookings)
-VALUES ('seatid2', 'CLUJ_5_beta_1.2', null, true);
+INSERT INTO Workspace (id, workspace_name, capacity)
+VALUES ('seatid2', 'CLUJ_5_beta_1.2', null);
 
-INSERT INTO Workspace (id, workspace_name, capacity, isAvailableForBookings)
-VALUES ('seatid3', 'CLUJ_5_beta_1.3', null, true);
+INSERT INTO Workspace (id, workspace_name, capacity)
+VALUES ('seatid3', 'CLUJ_5_beta_1.3', null);
 
-INSERT INTO Workspace (id, workspace_name, capacity, isAvailableForBookings)
-VALUES ('seatid4', 'CLUJ_5_beta_1.4', null, true);
+INSERT INTO Workspace (id, workspace_name, capacity)
+VALUES ('seatid4', 'CLUJ_5_beta_1.4', null);
 
 
 -- Enable pgcrypto extension if not already enabled
