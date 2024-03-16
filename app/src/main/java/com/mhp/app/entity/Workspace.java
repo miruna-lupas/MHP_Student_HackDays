@@ -25,6 +25,4 @@ public class Workspace {
 
     private Integer capacity;
 
-    boolean isAvailableForBookings = true;
-
 }
