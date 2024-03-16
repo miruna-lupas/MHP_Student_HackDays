@@ -10,6 +10,8 @@ Project Setup for the Hackathon organized by MHP for the UBB Computer Science St
 - Gradle
 - Eclipse Microprofile
 - CDI
+- Flyway migration tool
+- PostgreSQL
 
 # Project Description
 
