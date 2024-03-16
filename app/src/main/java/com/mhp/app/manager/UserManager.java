@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserManager {
@@ -18,16 +19,37 @@ public class UserManager {
         this.userRepo = userRepo;
     }
 
-    public User findByEmail(String email) {
-        return userRepo.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        return Optional.ofNullable(userRepo.findByEmail(email));
     }
 
-    public User findById(Long id) {
-        return userRepo.findById(id);
+    public Optional<User> findById(Long id) {
+        return userRepo.findByIdOptional(id);
     }
 
     public UserDisplayDTO createUser(User user) {
         userRepo.persist(user);
-        return new UserDisplayDTO( user.getEmail(), user.getRole());
+        return new UserDisplayDTO(user.getEmail(), user.getRole());
     }
+
+
+    public List<User> getAllUsers() {
+        return userRepo.listAll();
+    }
+
+
+    public void updateUser(User user) {
+        userRepo.persist(user);
+    }
+
+    public UserDisplayDTO getUserById(Long id) {
+        var user = userRepo.findByIdOptional(id).orElseThrow();
+        return new UserDisplayDTO(user.getEmail(), user.getRole());
+    }
+
+    public void deleteUserById(Long id) {
+        userRepo.deleteById(id);
+    }
+
+
 }
