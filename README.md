@@ -1,6 +1,6 @@
 # MHP_Student_HackDays
 Project Setup for the Hackathon organized by MHP for the UBB Computer Science Students (German line) between 16-17 march 2024
-Team members: Anghel Mircea, Iancu Stefan, Lupas Miruna
+- Team members: Anghel Mircea, Iancu Stefan, Lupas Miruna
 
 # Project Structure
 ### Technologies used
