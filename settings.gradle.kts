@@ -22,4 +22,4 @@ dependencyResolutionManagement{
 }
 
 rootProject.name="MHP_Student_Hackdays"
-include("app", "client", "utilities")
+include("app", "client")

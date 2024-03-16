@@ -27,6 +27,10 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    implementation("jakarta.ws.rs:jakarta.ws.rs-api:3.1.0")
+    implementation ("jakarta.inject:jakarta.inject-api:2.0.1")
+    implementation("jakarta.persistence:jakarta.persistence-api:3.1.0")
+
 
 
 }

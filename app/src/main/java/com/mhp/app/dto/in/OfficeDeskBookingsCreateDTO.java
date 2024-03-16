@@ -3,11 +3,11 @@ package com.mhp.app.dto.in;
 import java.sql.Time;
 import java.time.LocalDate;
 
-public record OfficeDeskBookingsDTO(
-        Long deskId,
+public record OfficeDeskBookingsCreateDTO(
+        String workspaceId,
         Long userId,
         LocalDate bookingStartDate,
-        LocalDate bookingEndDate,
         Time bookingStartTime,
+        LocalDate bookingEndDate,
         Time bookingEndTime) {
 }
