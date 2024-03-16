@@ -1,41 +1,45 @@
 package com.mhp.app.manager;
 
 
+import com.mhp.app.dto.in.WorkspaceBookingsCreateDTO;
 import com.mhp.app.dto.out.WorkspaceBookingsDTO;
 import com.mhp.app.entity.WorkspaceBooking;
-import com.mhp.app.manager.exceptions.BookingOverlapException;
+import com.mhp.app.exceptions.BookingOverlapException;
+import com.mhp.app.repo.UserRepo;
 import com.mhp.app.repo.WorkspaceBookingRepository;
-import io.quarkus.panache.common.Parameters;
+import com.mhp.app.repo.WorkspaceRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 
-import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.Collections.list;
 
 @ApplicationScoped
 public class WorkspaceBookingManager {
 
 
-    WorkspaceBookingRepository bookingRepository;
+    WorkspaceRepository workspaceRepository;
+
+    WorkspaceBookingRepository workspaceBookingRepository;
+
+    UserRepo userRepository;
 
     @Inject
-    public WorkspaceBookingManager(WorkspaceBookingRepository bookingRepository) {
-        this.bookingRepository = bookingRepository;
+    public WorkspaceBookingManager(WorkspaceBookingRepository workspaceBookingRepository, UserRepo userRepository) {
+        this.workspaceBookingRepository = workspaceBookingRepository;
+        this.userRepository = userRepository;
     }
 
     @Transactional
     public List<WorkspaceBookingsDTO> findAllActiveBookings() {
         var today = LocalDate.now();
-        List<WorkspaceBooking> bookings = bookingRepository.list("endDate >= ?1", today);
-        List<WorkspaceBookingsDTO> dtos = new ArrayList<>();
+        List<WorkspaceBooking> bookings = workspaceBookingRepository.list("endDate >= ?1", today);
+        List<WorkspaceBookingsDTO> dtoList = new ArrayList<>();
         for (WorkspaceBooking booking : bookings) {
-            dtos.add(new WorkspaceBookingsDTO(
-                    booking.getId(),
+            dtoList.add(new WorkspaceBookingsDTO(
                     booking.getWorkspace().getId(),
                     booking.getStartDate().toString(),
                     booking.getEndDate().toString(),
@@ -43,29 +47,59 @@ public class WorkspaceBookingManager {
                     booking.getEndTime().toString()
             ));
         }
-        return dtos;
+        return dtoList;
     }
 
 
-    public List<WorkspaceBooking> getExpiredBookingsByUserId(Long userId) {
-        return bookingRepository.findAllExpiredBookingsByUserId(userId);
+    public List<WorkspaceBookingsDTO> getExpiredBookingsByUserId(Long userId) {
+        return workspaceBookingRepository.findAllExpiredBookingsByUserId(userId);
     }
 
-    public void createBooking(WorkspaceBooking booking) throws BookingOverlapException {
-        if (!isWorkspaceAvailable(booking)) {
-            throw new BookingOverlapException("Workspace is not available during the specified timeframe");
-        }
-        bookingRepository.persist(booking);
+
+    public WorkspaceBooking createBooking(WorkspaceBookingsCreateDTO createDTO) throws BookingOverlapException {
+        var user = userRepository.findUserByID(createDTO.userId())
+                .orElseThrow(() -> new NotFoundException("User not found"));
+
+        var workspace = workspaceRepository.findWorkspaceByID(createDTO.workspaceId())
+                .orElseThrow(() -> new NotFoundException("Workspace not found"));
+
+        var booking = new WorkspaceBooking();
+        booking.setWorkspace(workspace);
+        booking.setUser(user);
+        booking.setStartDate(createDTO.bookingStartDate());
+        booking.setStartTime(createDTO.bookingStartTime());
+        booking.setEndDate(createDTO.bookingEndDate());
+        booking.setEndTime(createDTO.bookingEndTime());
+        checkForBookingOverlap(booking);
+
+        return workspaceBookingRepository.createBooking(booking);
     }
 
-    private boolean isWorkspaceAvailable(WorkspaceBooking booking) {
-        var startDate = booking.getStartDate();
-        var startTime = booking.getStartTime();
-        var endDate = booking.getEndDate();
-        var endTime = booking.getEndTime();
-        List<WorkspaceBooking> conflictingBookings = bookingRepository.findConflictingBookings(
-                booking.getWorkspace().getId(), startDate, startTime, endDate, endTime);
-        return conflictingBookings.isEmpty();
+    private void checkForBookingOverlap(WorkspaceBooking booking) throws BookingOverlapException {
+        workspaceBookingRepository.findAllActiveBookings()
+                .stream().filter(currentBooking -> !currentBooking.getId().equals(booking.getId()))
+                .anyMatch(currentBooking -> currentBooking.getEndDate().isAfter(booking.getStartDate())
+                        && currentBooking.getStartDate().isBefore(booking.getEndDate())
+                        && currentBooking.getEndTime().isAfter(booking.getStartTime())
+                        && currentBooking.getStartTime().isBefore(booking.getEndTime())
+                );
+        throw new BookingOverlapException("Booking overlaps with existing booking");
+    }
+
+    public WorkspaceBookingsDTO findById(Long id) {
+        var booking = workspaceBookingRepository.findById(id);
+        return new WorkspaceBookingsDTO(
+                booking.getWorkspace().getId(),
+                booking.getStartDate().toString(),
+                booking.getEndDate().toString(),
+                booking.getStartTime().toString(),
+                booking.getEndTime().toString()
+        );
+    }
+
+
+    public void deleteBooking(Long id) {
+        workspaceBookingRepository.deleteById(id);
     }
 
 }

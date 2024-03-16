@@ -51,4 +51,14 @@ public class WorkspaceBooking {
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
+
+
+    public WorkspaceBooking(Workspace workspace, User user, LocalDate startDate, LocalTime startTime,LocalDate endDate, LocalTime endTime) {
+        this.workspace = workspace;
+        this.user = user;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }
