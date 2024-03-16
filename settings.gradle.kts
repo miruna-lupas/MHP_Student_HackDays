@@ -5,10 +5,21 @@
  * For more detailed information on multi-project builds, please refer to https://docs.gradle.org/8.5/userguide/building_swift_projects.html in the Gradle documentation.
  */
 
-plugins {
-    // Apply the foojay-resolver plugin to allow automatic download of JDKs
-    id("org.gradle.toolchains.foojay-resolver-convention") version "0.7.0"
+pluginManagement{
+
+    repositories {
+        gradlePluginPortal()
+        mavenCentral()
+    }
 }
 
-rootProject.name="MHP_Hackathon"
+dependencyResolutionManagement{
+    versionCatalogs {
+        create("projectLibs") {
+            from(files("../MHP_Student_Hackdays/gradle/libs.versions.toml"))
+        }
+    }
+}
+
+rootProject.name="MHP_Student_Hackdays"
 include("app", "client", "utilities")
