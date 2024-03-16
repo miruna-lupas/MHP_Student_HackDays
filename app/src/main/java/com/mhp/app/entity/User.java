@@ -42,7 +42,10 @@ public class User {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OfficeDeskBooking> seatbookings = new ArrayList<>();
+    private List<OfficeDeskBooking> officeDeskBookings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MeetingBooking> meetingRoomBookings = new ArrayList<>();
 
 
 }
