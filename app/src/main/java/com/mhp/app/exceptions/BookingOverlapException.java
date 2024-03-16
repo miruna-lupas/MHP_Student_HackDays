@@ -1,4 +1,4 @@
-package com.mhp.app.manager.exceptions;
+package com.mhp.app.exceptions;
 
 import java.text.MessageFormat;
 
