@@ -7,11 +7,14 @@ import com.mhp.app.entity.WorkspaceBooking;
 import com.mhp.app.exceptions.PayloadBuilder;
 import com.mhp.app.manager.WorkspaceBookingManager;
 import com.mhp.app.exceptions.BookingOverlapException;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 
 import java.util.List;
 
@@ -21,11 +24,20 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class WorkspaceBookingResource {
 
-    @Inject
     WorkspaceBookingManager bookingManager;
+
+    @Context
+    SecurityContext securityContext;
+
+
+    @Inject
+    public WorkspaceBookingResource(WorkspaceBookingManager bookingManager) {
+        this.bookingManager = bookingManager;
+    }
 
     @GET
     @Path("/active")
+    @RolesAllowed("USER")
     public List<WorkspaceBookingsDTO> getActiveBookings() {
         return bookingManager.findAllActiveBookings();
     }

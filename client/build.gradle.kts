@@ -27,6 +27,8 @@ dependencies {
     implementation ("io.quarkus:quarkus-resteasy-reactive-jsonb")
     implementation ("io.quarkus:quarkus-smallrye-jwt")
     implementation ("io.quarkus:quarkus-oidc")
+    implementation ("io.quarkus:quarkus-undertow")
+
 
 }
 
