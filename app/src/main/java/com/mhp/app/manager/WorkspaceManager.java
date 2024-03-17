@@ -19,7 +19,7 @@ public class WorkspaceManager {
     }
 
 
-    public WorkspaceDisplayDTO createWorkspace(WorkspaceCreateDTO workspaceCreateDTO) {
+    public WorkspaceDisplayDTO createWorkspace(WorkspaceCreateDTO workspaceCreateDTO) throws EntityAlreadyExists {
         workspaceRepository.findWorkspaceByID(workspaceCreateDTO.id())
                 .ifPresent(workspace -> {
                     try {

@@ -40,6 +40,15 @@ public class User {
     private List<WorkspaceBooking> officeDeskBookings = new ArrayList<>();
 
 
+    public User(String email, Role role) {
+        this.email = email;
+        this.role = role;
+    }
 
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
 

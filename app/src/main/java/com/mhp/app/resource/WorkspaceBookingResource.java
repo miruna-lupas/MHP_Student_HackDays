@@ -4,6 +4,7 @@ package com.mhp.app.resource;
 import com.mhp.app.dto.in.WorkspaceBookingsCreateDTO;
 import com.mhp.app.dto.out.WorkspaceBookingsDTO;
 import com.mhp.app.entity.WorkspaceBooking;
+import com.mhp.app.exceptions.PayloadBuilder;
 import com.mhp.app.manager.WorkspaceBookingManager;
 import com.mhp.app.exceptions.BookingOverlapException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,14 +40,18 @@ public class WorkspaceBookingResource {
     @POST
     public Response createBooking(WorkspaceBookingsCreateDTO booking) throws BookingOverlapException {
         WorkspaceBooking createdBooking = bookingManager.createBooking(booking);
-        return Response.ok(createdBooking.getId()).build();
+        return Response.status(Response.Status.CREATED)
+                .entity(new PayloadBuilder("Booking created successfully" + bookingManager.findById(createdBooking.getId())))
+                .build();
     }
 
     @DELETE
     @Path("/{id}")
     public Response deleteBooking(@PathParam("id") Long id) {
         bookingManager.deleteBooking(id);
-        return Response.ok().build();
+        return Response.status(Response.Status.OK)
+                .entity(new PayloadBuilder("Booking deleted successfully"))
+                .build();
     }
 
     @GET

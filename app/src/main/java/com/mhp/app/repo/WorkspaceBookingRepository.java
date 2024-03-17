@@ -3,8 +3,10 @@ package com.mhp.app.repo;
 import com.mhp.app.dto.out.WorkspaceBookingsDTO;
 import com.mhp.app.entity.WorkspaceBooking;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
-import io.quarkus.panache.common.Parameters;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
+import jakarta.transaction.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,31 +15,53 @@ import java.util.List;
 @ApplicationScoped
 public class WorkspaceBookingRepository implements PanacheRepositoryBase<WorkspaceBooking, Long> {
 
+    EntityManager entityManager;
+
+    @Inject
+    public WorkspaceBookingRepository(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    @Transactional
     public WorkspaceBooking findByWorkspaceName(Long workspaceName) {
         return find("workspaceName", workspaceName).firstResult();
     }
 
+    @Transactional
     public WorkspaceBooking createBooking(WorkspaceBooking booking) {
         persist(booking);
         return booking;
     }
 
+    @Transactional
     public WorkspaceBooking findByUserId(Long userId) {
         return find("userId", userId).firstResult();
     }
 
+    @Transactional
     public List<WorkspaceBooking> findAllActiveBookings() {
-        return list("endDate >= :today", Parameters.with("today", LocalDate.now()));
+        return entityManager.createQuery(
+                "SELECT wb FROM WorkspaceBooking wb " +
+                        "WHERE wb.endDate >= :today", WorkspaceBooking.class)
+        .setParameter("today", LocalDate.now())
+        .getResultList();
     }
 
-   public List<WorkspaceBookingsDTO> findAllExpiredBookingsByUserId(Long userId) {
-        return list("userId = :userId and endDate < :today", Parameters.with("userId", userId).and("today", LocalDate.now()))
+    @Transactional
+    public List<WorkspaceBookingsDTO> findAllExpiredBookingsByUserId(Long userId) {
+        return entityManager.createQuery(
+                        "SELECT wb FROM WorkspaceBooking wb " +
+                                "WHERE wb.user.id = :userId AND wb.endDate < :today", WorkspaceBooking.class)
+                .setParameter("userId", userId)
+                .setParameter("today", LocalDate.now())
+                .getResultList()
                 .stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
-    private WorkspaceBookingsDTO convertToDTO(WorkspaceBooking booking) {
+    @Transactional
+    public WorkspaceBookingsDTO convertToDTO(WorkspaceBooking booking) {
         return new WorkspaceBookingsDTO(
                 booking.getWorkspace().getId(),
                 booking.getStartDate().toString(),
@@ -48,6 +72,7 @@ public class WorkspaceBookingRepository implements PanacheRepositoryBase<Workspa
     }
 
 
+    @Transactional
     public List<WorkspaceBooking> findConflictingBookings(String workspaceId,
                                                           LocalDate startDate,
                                                           LocalTime startTime,

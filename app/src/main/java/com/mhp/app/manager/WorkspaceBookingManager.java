@@ -13,7 +13,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +34,7 @@ public class WorkspaceBookingManager {
 
     @Transactional
     public List<WorkspaceBookingsDTO> findAllActiveBookings() {
-        var today = LocalDate.now();
-        List<WorkspaceBooking> bookings = workspaceBookingRepository.list("endDate >= ?1", today);
+        var bookings = workspaceBookingRepository.findAllActiveBookings();
         List<WorkspaceBookingsDTO> dtoList = new ArrayList<>();
         for (WorkspaceBooking booking : bookings) {
             dtoList.add(new WorkspaceBookingsDTO(
@@ -75,7 +73,7 @@ public class WorkspaceBookingManager {
         return workspaceBookingRepository.createBooking(booking);
     }
 
-    private void checkForBookingOverlap(WorkspaceBooking booking) throws BookingOverlapException {
+    private boolean checkForBookingOverlap(WorkspaceBooking booking) throws BookingOverlapException {
         workspaceBookingRepository.findAllActiveBookings()
                 .stream().filter(currentBooking -> !currentBooking.getId().equals(booking.getId()))
                 .anyMatch(currentBooking -> currentBooking.getEndDate().isAfter(booking.getStartDate())

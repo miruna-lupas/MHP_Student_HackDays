@@ -25,6 +25,8 @@ dependencies {
     implementation ("com.fasterxml.jackson.core:jackson-databind")
     implementation ("io.quarkus:quarkus-resteasy-reactive-jackson")
     implementation ("io.quarkus:quarkus-resteasy-reactive-jsonb")
+    implementation ("io.quarkus:quarkus-smallrye-jwt")
+    implementation ("io.quarkus:quarkus-oidc")
 
 }
 

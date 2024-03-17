@@ -1,5 +1,6 @@
 package com.mhp.app.manager;
 
+import com.mhp.app.dto.in.UserDTO;
 import com.mhp.app.dto.out.UserDisplayDTO;
 import com.mhp.app.entity.User;
 import com.mhp.app.repo.UserRepo;
@@ -27,28 +28,24 @@ public class UserManager {
         return userRepo.findByIdOptional(id);
     }
 
-    public UserDisplayDTO createUser(User user) {
-        userRepo.persist(user);
-        return new UserDisplayDTO(user.getEmail(), user.getRole());
+    public User createUser(UserDTO user) {
+        userRepo.createUser(new User(user.email(),user.password(), user.role()));
+        return new User(user.email(), user.role());
     }
 
 
-    public List<User> getAllUsers() {
-        return userRepo.listAll();
+    public List<UserDisplayDTO> getAllUsers() {
+        return userRepo.getAllUsers();
     }
 
 
-    public void updateUser(User user) {
-        userRepo.persist(user);
-    }
-
-    public UserDisplayDTO getUserById(Long id) {
+    public UserDisplayDTO findUserByID(Long id) {
         var user = userRepo.findByIdOptional(id).orElseThrow();
         return new UserDisplayDTO(user.getEmail(), user.getRole());
     }
 
     public void deleteUserById(Long id) {
-        userRepo.deleteById(id);
+        userRepo.deleteUserById(id);
     }
 
 

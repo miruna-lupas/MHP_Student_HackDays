@@ -16,7 +16,7 @@ pluginManagement{
 dependencyResolutionManagement{
     versionCatalogs {
         create("projectLibs") {
-            from(files("../MHP_Student_Hackdays/gradle/libs.versions.toml"))
+            from(files("../CodingContest/gradle/libs.versions.toml"))
         }
     }
 }
