@@ -1,10 +1,7 @@
 package com.mhp.app.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -16,34 +13,42 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode(callSuper = false)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "First name must not be empty")
-    @NotNull(message = "First name must not be null")
-    private String firstName;
 
-    @NotBlank(message = "Last name must not be empty")
-    private String lastName;
-
-    @Column(name = "email", nullable = false, unique = true)
     @NotBlank(message = "Email must not be empty")
     @NotNull(message = "Email must not be null")
     @Email(message = "Email must be a valid email address")
-    @Pattern(regexp =  "^[a-z0-9._%+-]+\\.[a-z0-9._%+-]+@nexttech\\.ro$")
     private String email;
+
+    @NotBlank(message = "Password must not be empty")
+    @NotNull(message = "Password must not be null")
+    @Size(min = 8, message = "Password must be at least 8 characters")
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @NotNull(message = "Role must not be null")
     private Role role;
 
-
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<OfficeDeskBooking> seatbookings = new ArrayList<>();
+    private List<WorkspaceBooking> officeDeskBookings = new ArrayList<>();
 
 
+    public User(String email, Role role) {
+        this.email = email;
+        this.role = role;
+    }
+
+    public User(String email, String password, Role role) {
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
 

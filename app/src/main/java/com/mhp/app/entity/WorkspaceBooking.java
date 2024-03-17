@@ -11,13 +11,14 @@ import lombok.Setter;
 
 import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MeetingBooking {
+public class WorkspaceBooking {
 
 
     @Id
@@ -25,8 +26,8 @@ public class MeetingBooking {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "meeting_room_id")
-    private MeetingRoom meetingRoom;
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -41,14 +42,23 @@ public class MeetingBooking {
     @NotNull(message = "End date is mandatory")
     private LocalDate endDate;
 
-
     @NotNull(message = "Start time is mandatory")
-    private Time startTime;
+    private LocalTime  startTime;
 
     @NotNull(message = "End time is mandatory")
-    private Time endTime;
+    private LocalTime endTime;
 
 
     @Enumerated(EnumType.STRING)
     private Status status = Status.ACTIVE;
+
+
+    public WorkspaceBooking(Workspace workspace, User user, LocalDate startDate, LocalTime startTime,LocalDate endDate, LocalTime endTime) {
+        this.workspace = workspace;
+        this.user = user;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

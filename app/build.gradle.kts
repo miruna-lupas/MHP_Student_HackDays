@@ -1,4 +1,3 @@
-
 val versionCatalog = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
 plugins {
@@ -14,24 +13,28 @@ repositories {
 
 dependencies {
     versionCatalog.findVersion("quarkusPluginVersion").ifPresent {
-        implementation(enforcedPlatform("io.quarkus:quarkus-bom:${it}"))}
-        implementation("org.apache.commons:commons-text")
-        implementation("io.quarkus:quarkus-resteasy-reactive")
-        implementation("io.quarkus:quarkus-arc")
-        testImplementation("io.quarkus:quarkus-junit5-mockito")
-        testImplementation("io.rest-assured:rest-assured")
-        implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
-        implementation("io.quarkus:quarkus-resteasy-reactive-jsonb")
-        annotationProcessor("io.quarkus:quarkus-panache-common")
-        implementation("io.quarkus:quarkus-jdbc-postgresql")
-        implementation("io.quarkus:quarkus-hibernate-validator")
-        implementation("io.quarkus:quarkus-hibernate-orm-panache")
-        testImplementation("io.quarkus:quarkus-jdbc-h2")
-        implementation("io.quarkus:quarkus-security")
-        implementation("io.quarkus:quarkus-smallrye-openapi")
-        implementation("io.quarkus:quarkus-flyway")
-        implementation(project(":client"))
+        implementation(enforcedPlatform("io.quarkus:quarkus-bom:${it}"))
     }
+    implementation("org.apache.commons:commons-text")
+    implementation("io.quarkus:quarkus-resteasy-reactive")
+    implementation("io.quarkus:quarkus-arc")
+    testImplementation("io.quarkus:quarkus-junit5-mockito")
+    testImplementation("io.rest-assured:rest-assured")
+    implementation("io.quarkus:quarkus-resteasy-reactive-jackson")
+    implementation("io.quarkus:quarkus-resteasy-reactive-jsonb")
+    annotationProcessor("io.quarkus:quarkus-panache-common")
+    implementation("io.quarkus:quarkus-jdbc-postgresql")
+    implementation("io.quarkus:quarkus-hibernate-validator")
+    implementation("io.quarkus:quarkus-hibernate-orm-panache")
+    testImplementation("io.quarkus:quarkus-jdbc-h2")
+    implementation("io.quarkus:quarkus-security")
+    implementation("io.quarkus:quarkus-smallrye-openapi")
+    implementation("io.quarkus:quarkus-flyway")
+    implementation("io.quarkus:quarkus-smallrye-jwt:3.8.2")
+    implementation(project(":client"))
+    implementation(libs.lombok)
+    annotationProcessor(libs.lombok)
+}
 
 group = "com.mhp"
 version = "1.0.0-SNAPSHOT"
